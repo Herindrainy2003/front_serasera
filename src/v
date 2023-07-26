@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, CardHeader, Typography, Container, TextField, Button, Card, CardMedia, CardContent, CardActions } from '@mui/material';
+import { AppBar, Toolbar, Typography, Container, TextField, Button, Card, CardMedia, CardContent, CardActions } from '@mui/material';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -25,7 +25,6 @@ function App() {
       console.error('Error fetching tasks:', error);
     }
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,7 +79,7 @@ function App() {
       {/* Contenu */}
       <Container>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
-          <TextField
+        <TextField
             label="Nom Pisera"
             fullWidth
             margin="normal"
@@ -121,42 +120,41 @@ function App() {
             onChange={handleChange}
           />
           <input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, photo: e.target.files[0] })} />
+
           <Button variant="contained" color="primary" type="submit">
-            Asera
+            Ajouter
           </Button>
         </form>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '20px' }}>
-     
-        {Array.isArray(tasks) &&
-  tasks.map((task) => (
-   
-   <Card key={task.id} style={{ margin: '16px', width: '300px' }}>
-      <CardMedia
-        component="img"
-        height="280"
-        image={`http://localhost:5000/images/${task.photo}`} // Assurez-vous que le chemin d'accès est correct
-        alt={task.nomSera}
-      />
-      <CardHeader title={task.nomsera} /> {/* Affiche le nomSera dans le titre de la carte */}
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-         <h10> Contact: </h10> {task.contact}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Description: {task.descriptionsera}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Prix: {task.prix}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small" color="primary">
-          Seraina
-        </Button>
-      </CardActions>
-    </Card>
-  ))}
+        {/* Affichage des produits */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+          {Array.isArray(tasks) &&
+            tasks.map((task) => (
+              <Card key={task.id} style={{ margin: '16px', width: '300px' }}>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={`http://localhost:5000/images/${task.photo}`}
+                  alt={task.nomSera}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {task.nomSera}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {task.descriptionSera}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Prix: {task.prix}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button size="small" color="primary">
+                    Asera
+                  </Button>
+                </CardActions>
+              </Card>
+            ))}
         </div>
       </Container>
     </div>
