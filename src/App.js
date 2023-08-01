@@ -4,6 +4,7 @@ import { Paper } from '@mui/material';
 import carouselImage1 from './images/sary.jpg';
 import carouselImage2 from './images/pic.jpg';
 import carouselImage3 from './images/Lame.jpg';
+import logoImage from './images/logo.png';
 import {
   AppBar,
   Toolbar,
@@ -24,6 +25,7 @@ import {
 } from '@mui/material';
 // Importez également le composant SinglePage
 import SinglePage from './SinglePage'; // Assurez-vous de remplacer le chemin d'accès approprié si nécessaire
+//header
 
 function App() {
   const [categories, setCategories] = useState([]);
@@ -52,7 +54,46 @@ const [formHovered, setFormHovered] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [filteredTasks, setFilteredTasks] = useState([]);
 
+//photos 
+const handleTakePhoto = async () => {
+  try {
+    // Ouvrir l'appareil photo en utilisant l'API MediaDevices
+    const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
 
+    // Créer un élément vidéo pour afficher le flux de la caméra
+    const videoElement = document.createElement('video');
+    videoElement.srcObject = mediaStream;
+    videoElement.style.display = 'block';
+    videoElement.style.margin = '0 auto';
+    videoElement.style.maxWidth = '100%';
+    videoElement.style.maxHeight = '100%';
+
+    // Afficher la vidéo dans une fenêtre contextuelle (popup)
+    const popup = window.open('', '_blank', 'width=640,height=480');
+    popup.document.body.appendChild(videoElement);
+
+    // Laisser l'utilisateur prendre une photo en cliquant sur le bouton dans la fenêtre contextuelle
+    const takePhotoButton = document.createElement('button');
+    takePhotoButton.innerText = 'Prendre une photo';
+    takePhotoButton.onclick = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+      // Convertir la photo en URL de données
+      const photoUrl = canvas.toDataURL();
+      console.log('URL de la photo:', photoUrl);
+
+      // Fermer la fenêtre contextuelle après avoir pris la photo
+      popup.close();
+    };
+
+    popup.document.body.appendChild(takePhotoButton);
+  } catch (error) {
+    console.error('Erreur lors de l\'accès à l\'appareil photo:', error);
+  }
+};
   useEffect(() => {
     fetchTasks(); // Charger toutes les tâches au chargement initial de la page
     fetchCategories();
@@ -204,7 +245,7 @@ const [formHovered, setFormHovered] = useState(false);
       <AppBar position="static">
        
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-    <Typography variant="h6">SERA2</Typography>
+        <img src={logoImage} alt="Logo" style={{ height: '80px' }} />
    
           <Select
   value={selectedCategoryHeader}
@@ -214,7 +255,7 @@ const [formHovered, setFormHovered] = useState(false);
   margin="dense"
   name="categories"
 >
-  <MenuItem value="">Toutes les catégories</MenuItem>
+  <MenuItem value="">Les catégories</MenuItem>
   {allCategories.map((category) => (
     <MenuItem key={category.id} value={category.id}>
       {category.name}
@@ -254,6 +295,7 @@ const [formHovered, setFormHovered] = useState(false);
       </Carousel>
       {/* Contenu */}
       <Container>
+     
       {showForm ? (
          <form className={`form ${formClass}`} onSubmit={handleSubmit} encType="multipart/form-data">
           <Grid container justifyContent="center" spacing={2}>
@@ -265,7 +307,7 @@ const [formHovered, setFormHovered] = useState(false);
             name="nomPisera"
             value={formData.nomPisera}
             onChange={handleChange}
-            style={{ maxWidth: 400 }}
+            style={{ Width: 400 }}
           />
           <TextField
             label="Anaran'ny Sera"
@@ -275,7 +317,7 @@ const [formHovered, setFormHovered] = useState(false);
             value={formData.nomSera}
             onChange={handleChange}
             // Définir la largeur ici (50% de la largeur du conteneur ou une valeur fixe)
-            style={{ maxWidth: 400 }}
+            style={{ Width: 400 }}
          />
           <TextField
             label="Mombamoban'ny  Sera"
@@ -284,7 +326,7 @@ const [formHovered, setFormHovered] = useState(false);
             name="descriptionSera"
             value={formData.descriptionSera}
             onChange={handleChange}
-            style={{ maxWidth: 400 }}
+            style={{ Width: 400 }}
           />
        <Select
             value={selectedCategory}
@@ -293,9 +335,10 @@ const [formHovered, setFormHovered] = useState(false);
             variant="outlined"
             margin="dense"
             name="categories"
-            style={{ maxWidth: 400 }}
+            style={{ Width: 400 }}
           >
-            <MenuItem value="">Toutes les catégories</MenuItem>
+            <MenuItem value="">Les catégories</MenuItem>
+          
             {categories.map((categories) => (
               <MenuItem key={categories.id} value={categories.id}>
                 {categories.name}
@@ -312,7 +355,7 @@ const [formHovered, setFormHovered] = useState(false);
             name="prix"
             value={formData.prix}
             onChange={handleChange}
-            style={{ maxWidth: 400 }}
+            style={{Width: 400 }}
           />
           <TextField
             label="Contact"
@@ -321,16 +364,19 @@ const [formHovered, setFormHovered] = useState(false);
             name="contact"
             value={formData.contact}
             onChange={handleChange}
-            style={{ maxWidth: 400 }}
+            style={{Width: 400 }}
           />
           <input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, photo: e.target.files[0] })} />
+          <Button variant="contained" color="primary" onClick={handleTakePhoto}>
+        Prendre une photo
+      </Button>
           <Button variant="contained" color="primary" type="submit">
             Asera
           </Button>
           </Grid>
             </Grid>
         </form>  
-         
+   
         ): (
           <SinglePage filteredTasks={filteredTasks} /> // Pass the filteredTasks state as a prop
           
@@ -338,7 +384,7 @@ const [formHovered, setFormHovered] = useState(false);
          
           <div>
             
-          <h1>Produits de la catégorie sélectionnée</h1>
+          <h1>IREO SERA</h1> 
           {filteredTasks.map((task) => (
             <div key={task.id}>
               <p>Nom: {task.nomSera}</p>
