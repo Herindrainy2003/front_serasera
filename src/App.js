@@ -19,6 +19,8 @@ import {
   CardActions,
   Select,
   Tooltip,
+  Grid,
+  Box
 } from '@mui/material';
 // Importez également le composant SinglePage
 import SinglePage from './SinglePage'; // Assurez-vous de remplacer le chemin d'accès approprié si nécessaire
@@ -200,10 +202,10 @@ const [formHovered, setFormHovered] = useState(false);
       <div>
       {/* Header */}
       <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6">SERA2</Typography>
-          <Button color="inherit">Accueil</Button>
-          <Button color="inherit">Contact</Button>
+       
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <Typography variant="h6">SERA2</Typography>
+   
           <Select
   value={selectedCategoryHeader}
   onChange={handleCategoryHeaderChange} // Utilisation de la nouvelle fonction pour gérer le changement de catégorie
@@ -219,7 +221,14 @@ const [formHovered, setFormHovered] = useState(false);
     </MenuItem>
   ))}
 </Select>
-
+<Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <MenuItem>
+    <Button color="inherit">Accueil</Button>
+  </MenuItem>
+  <MenuItem>
+    <Button color="inherit">Contact</Button>
+  </MenuItem>
+    </Box>
         </Toolbar>
       </AppBar>
       {/* Carousel */}
@@ -247,6 +256,8 @@ const [formHovered, setFormHovered] = useState(false);
       <Container>
       {showForm ? (
          <form className={`form ${formClass}`} onSubmit={handleSubmit} encType="multipart/form-data">
+          <Grid container justifyContent="center" spacing={2}>
+              <Grid item xs={12} sm={6}>
           <TextField
             label="Anarana Pisera"
             fullWidth
@@ -254,6 +265,7 @@ const [formHovered, setFormHovered] = useState(false);
             name="nomPisera"
             value={formData.nomPisera}
             onChange={handleChange}
+            style={{ maxWidth: 400 }}
           />
           <TextField
             label="Anaran'ny Sera"
@@ -263,7 +275,7 @@ const [formHovered, setFormHovered] = useState(false);
             value={formData.nomSera}
             onChange={handleChange}
             // Définir la largeur ici (50% de la largeur du conteneur ou une valeur fixe)
-           
+            style={{ maxWidth: 400 }}
          />
           <TextField
             label="Mombamoban'ny  Sera"
@@ -272,7 +284,7 @@ const [formHovered, setFormHovered] = useState(false);
             name="descriptionSera"
             value={formData.descriptionSera}
             onChange={handleChange}
-        
+            style={{ maxWidth: 400 }}
           />
        <Select
             value={selectedCategory}
@@ -281,12 +293,14 @@ const [formHovered, setFormHovered] = useState(false);
             variant="outlined"
             margin="dense"
             name="categories"
+            style={{ maxWidth: 400 }}
           >
             <MenuItem value="">Toutes les catégories</MenuItem>
             {categories.map((categories) => (
               <MenuItem key={categories.id} value={categories.id}>
                 {categories.name}
               </MenuItem>
+              
             ))}
            
           </Select>
@@ -298,6 +312,7 @@ const [formHovered, setFormHovered] = useState(false);
             name="prix"
             value={formData.prix}
             onChange={handleChange}
+            style={{ maxWidth: 400 }}
           />
           <TextField
             label="Contact"
@@ -306,11 +321,14 @@ const [formHovered, setFormHovered] = useState(false);
             name="contact"
             value={formData.contact}
             onChange={handleChange}
+            style={{ maxWidth: 400 }}
           />
           <input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, photo: e.target.files[0] })} />
           <Button variant="contained" color="primary" type="submit">
             Asera
           </Button>
+          </Grid>
+            </Grid>
         </form>  
          
         ): (
@@ -370,10 +388,12 @@ const [formHovered, setFormHovered] = useState(false);
                 placement="right"
                 arrow
               >
-                <Card key={task.id} style={{ margin: '16px', width: '300px' }}>
+                  <Card key={task.id} style={{ margin: '16px', width: '300px', boxShadow: 'rgba(0, 0, 0, 1) 0px 3px 10px' }}>
+                
+               
                   <CardMedia
                     component="img"
-                    height="280"
+                    height="240"
                     image={`http://localhost:5000/images/${task.photo}`}
                     alt={task.nomsera}
                   />
