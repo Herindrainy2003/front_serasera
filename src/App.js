@@ -192,7 +192,17 @@ const handleTakePhoto = async () => {
   setShowTooltip(taskId); // Afficher la tooltip pour indiquer quel élément a été cliqué
 };
 
-  
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./front_serasera/src/service-worker.js')
+      .then(registration => {
+        console.log('Service Worker enregistré avec succès:', registration);
+      })
+      .catch(error => {
+        console.log('Échec de l\'enregistrement du Service Worker:', error);
+      });
+  });
+}
   const handleCategoryChange = async (event) => {
     const selectedValue = event.target.value;
     setSelectedCategory(selectedValue);
@@ -237,7 +247,7 @@ const handleTakePhoto = async () => {
     }
   };
   const formClass = showForm ? '' : 'hidden';
-
+ 
   return (
     
       <div>
