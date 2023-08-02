@@ -25,8 +25,8 @@ import {
 } from '@mui/material';
 // Importez également le composant SinglePage
 import SinglePage from './SinglePage'; // Assurez-vous de remplacer le chemin d'accès approprié si nécessaire
-//header
 
+import PublicitesPage from './PublicitesPage'; // Assurez-vous de fournir le bon chemin d'accès
 function App() {
   const [categories, setCategories] = useState([]);
     // Ajoutez ici d'autres catégories prédéfinies si nécessaire
@@ -53,7 +53,9 @@ const [formHovered, setFormHovered] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [showForm, setShowForm] = useState(true);
   const [filteredTasks, setFilteredTasks] = useState([]);
+//espaces pubs 
 
+const [afficherPublicites, setAfficherPublicites] = useState(false); // Ajoutez l'état pour afficher les publicités
 //photos 
 const handleTakePhoto = async () => {
   try {
@@ -127,7 +129,16 @@ const handleTakePhoto = async () => {
     setSelectedCategoryHeader(selectedValue);
     
     console.log('ID de la catégorie sélectionnée dans le header:', selectedValue);
-  
+    if (selectedValue === 'espacesPubs') {
+      setAfficherPublicites(true); // Afficher les publicités
+      setShowForm(false); // Masquer le formulaire
+    } else if (selectedValue === 'accueil') {
+      setAfficherPublicites(false); // Masquer les publicités
+      setShowForm(true); // Afficher le formulaire
+    } else {
+      fetchFilteredTasks(parseInt(selectedValue));
+      setShowForm(false); // Masquer le formulaire
+    }
     if (selectedValue !== '') {
       fetchFilteredTasks(parseInt(selectedValue));
       setShowForm(false); // Masquer le formulaire lorsque la catégorie est sélectionnée
@@ -257,7 +268,23 @@ if ('serviceWorker' in navigator) {
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <img src={logoImage} alt="Logo" style={{ height: '80px' }} />
    
-          <Select
+      
+<Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <MenuItem>
+   <Button color="inherit" onClick={() => handleCategoryHeaderChange({ target: { value: 'accueil' } })}>
+  Accueil
+</Button>
+  </MenuItem>
+  <MenuItem>
+    <Button color="inherit">Contact</Button>
+  </MenuItem>
+  <MenuItem>
+  <Button color="inherit" onClick={() => handleCategoryHeaderChange({ target: { value: 'espacesPubs' } })}>
+  Espaces Pubs
+</Button>
+
+  </MenuItem>
+  <Select
   value={selectedCategoryHeader}
   onChange={handleCategoryHeaderChange} // Utilisation de la nouvelle fonction pour gérer le changement de catégorie
   displayEmpty
@@ -272,13 +299,6 @@ if ('serviceWorker' in navigator) {
     </MenuItem>
   ))}
 </Select>
-<Box sx={{ display: 'flex', alignItems: 'center' }}>
-    <MenuItem>
-    <Button color="inherit">Accueil</Button>
-  </MenuItem>
-  <MenuItem>
-    <Button color="inherit">Contact</Button>
-  </MenuItem>
     </Box>
         </Toolbar>
       </AppBar>
@@ -304,10 +324,13 @@ if ('serviceWorker' in navigator) {
         {/* Add more Paper components for additional carousel images */}
       </Carousel>
       {/* Contenu */}
+     
+
       <Container>
      
       {showForm ? (
-         <form className={`form ${formClass}`} onSubmit={handleSubmit} encType="multipart/form-data">
+        
+        <form className={`form ${formClass}`} onSubmit={handleSubmit} encType="multipart/form-data">
           <Grid container justifyContent="center" spacing={2}>
               <Grid item xs={12} sm={6}>
           <TextField
@@ -393,7 +416,7 @@ if ('serviceWorker' in navigator) {
           )}
          
           <div>
-            
+  
           <h1>IREO SERA</h1> 
           {filteredTasks.map((task) => (
             <div key={task.id}>
@@ -407,38 +430,17 @@ if ('serviceWorker' in navigator) {
           
     
                {/* Conteneur pour afficher les tâches */}
-               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '20px' }}/>
+              
+               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '20px' }}></div>
+               {afficherPublicites ? (
+        <PublicitesPage />
+      ) : (
+        <div>
 
-               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '20px' }}>
   {Array.isArray(tasks) &&
     tasks.map((task) => (
               <Tooltip
-                key={task.id}
-                title={
-                  <div style={{ maxWidth: '300px', padding: '10px' }}>
-                    <form onSubmit={handleHiseraButtonClick}>
-                    <TextField
-                        label="Nom"
-                        fullWidth
-                        margin="normal"
-                        name="nom"
-                        value={formData.nom}
-                        onChange={handleChange}
-                      />
-                      <TextField
-                        label="Contact"
-                        fullWidth
-                        margin="normal"
-                        name="contact"
-                        value={formData.contact}
-                        onChange={handleChange}
-                      />
-                      <Button variant="contained" color="primary" type="submit">
-                        Hisera
-                      </Button>
-                    </form>
-                  </div>
-                }
+                
                 open={showTooltip && task.id === showTooltip}
                 onClose={() => setShowTooltip(false)}
                 placement="right"
@@ -465,15 +467,13 @@ if ('serviceWorker' in navigator) {
                       Prix: {task.prix}
                     </Typography>
                   </CardContent>
-                  <CardActions>
-                    <Button size="small" color="primary" onClick={() => setShowTooltip(task.id)}>
-                      Seraina
-                    </Button>
-                  </CardActions>
+                  
                 </Card>
               </Tooltip>
-            ))}
+          ))}
+         
         </div>
+      )}
       </Container>
     </div>
   );
