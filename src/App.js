@@ -31,7 +31,10 @@ function App() {
   const [categories, setCategories] = useState([]);
     // Ajoutez ici d'autres catégories prédéfinies si nécessaire
     const [selectedCategoryHeader, setSelectedCategoryHeader] = useState('');
-    
+    const handleAccueilClick = () => {
+      setAfficherPublicites(false); // Assurez-vous que les publicités sont cachées
+      setShowForm(true); // Affichez à nouveau le formulaire
+    };
   const [allCategories, setAllCategories] = useState([]);
   // Avant le retour de la fonction App()
 const [formHovered, setFormHovered] = useState(false);
@@ -271,7 +274,7 @@ if ('serviceWorker' in navigator) {
       
 <Box sx={{ display: 'flex', alignItems: 'center' }}>
     <MenuItem>
-   <Button color="inherit" onClick={() => handleCategoryHeaderChange({ target: { value: 'accueil' } })}>
+    <Button color="inherit" onClick={() => { setAfficherPublicites(false); setShowForm(true); }}>
   Accueil
 </Button>
   </MenuItem>
