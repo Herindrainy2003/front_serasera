@@ -5,6 +5,8 @@ import carouselImage1 from './images/sary.jpg';
 import carouselImage2 from './images/pic.jpg';
 import carouselImage3 from './images/Lame.jpg';
 import logoImage from './images/logo.png';
+import MenuIcon from '@mui/icons-material/Menu'; // Importez l'icône MenuIcon depuis Material-UI
+
 import {
   AppBar,
   Toolbar,
@@ -29,14 +31,7 @@ import {
   ListItemText,
   IconButton ,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import ContactIcon from '@mui/icons-material/ContactMail';
-import AdIcon from '@mui/icons-material/LocalOffer';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import Collapse from '@mui/material/Collapse';
+
 // Importez également le composant SinglePage
 import SinglePage from './SinglePage'; // Assurez-vous de remplacer le chemin d'accès approprié si nécessaire
 
@@ -50,11 +45,13 @@ function App() {
       setShowForm(true); // Afficher le formulaire
       setFilteredTasks([]); // Réinitialiser la liste des produits affichés
     };
-    
+    //responsve
+
   const [allCategories, setAllCategories] = useState([]);
   // Avant le retour de la fonction App()
 const [formHovered, setFormHovered] = useState(false);
-
+const [isMobileView, setIsMobileView] = useState(false);
+const [menuOpen, setMenuOpen] = useState(false); // Ajouter l'état pour contrôler l'ouverture/fermeture du menu
 
   const [categoryIdCounter, setCategoryIdCounter] = useState(3); // Compteur pour l'ID de la prochaine catégorie
   const [tasks, setTasks] = useState([]);
@@ -145,20 +142,24 @@ const handleTakePhoto = async () => {
   
   const handleCategoryHeaderChange = (event) => {
     const selectedValue = event.target.value;
-    setSelectedCategoryHeader(selectedValue);
   
     if (selectedValue === 'espacesPubs') {
-      setAfficherPublicites(true); // Afficher les publicités
-      setShowForm(false); // Masquer le formulaire
-      setSelectedCategoryHeader(''); // Réinitialiser la sélection des catégories
+      setAfficherPublicites(true);
+      setShowForm(false);
+      setSelectedCategoryHeader('');
+      setFilteredTasks([]); // Réinitialiser la liste filtrée
     } else if (selectedValue === 'accueil') {
-      setAfficherPublicites(false); // Masquer les publicités
-      setShowForm(true); // Afficher le formulaire
+      setAfficherPublicites(false);
+      setShowForm(true);
+      setSelectedCategoryHeader('');
+      setFilteredTasks([]); // Réinitialiser la liste filtrée
     } else {
-      fetchFilteredTasks(parseInt(selectedValue));
-      setShowForm(false); // Masquer le formulaire
+      setSelectedCategoryHeader(selectedValue);
+      fetchFilteredTasks(parseInt(selectedValue)); // Mettre à jour la liste filtrée
+      setShowForm(false);
     }
   };
+  
   
   
   const handleSubmit = async (e) => {
@@ -268,52 +269,127 @@ if ('serviceWorker' in navigator) {
     }
   };
   const formClass = showForm ? '' : 'hidden';
- 
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth <= 600);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
   return (
     
       <div>
-      {/* Header */}
      
-      <AppBar position="static">
-       
+     
+        {/* Header */}
+        <AppBar position="static">
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <img src={logoImage} alt="Logo" style={{ height: '80px' }} />
-   
-      
-<Box sx={{ display: 'flex', alignItems: 'center' }}>
-    <MenuItem>
-    <Button color="inherit" onClick={handleAccueilClick}>
-  Accueil
-</Button>
+          <img src={logoImage} alt="Logo" style={{ height: '80px' }} />
 
-  </MenuItem>
-  <MenuItem>
-    <Button color="inherit">Contact</Button>
-  </MenuItem>
-  <MenuItem>
-  <Button color="inherit" onClick={() => handleCategoryHeaderChange({ target: { value: 'espacesPubs' } })}>
-  Espaces Pubs
-</Button>
-
-  </MenuItem>
-  <Select
-  value={selectedCategoryHeader}
-  onChange={handleCategoryHeaderChange} // Utilisation de la nouvelle fonction pour gérer le changement de catégorie
-  displayEmpty
-  variant="outlined"
-  margin="dense"
-  name="categories"
->
-  <MenuItem value="">Les catégories</MenuItem>
-  {allCategories.map((category) => (
-    <MenuItem key={category.id} value={category.id}>
-      {category.name}
-    </MenuItem>
-  ))}
-</Select>
-    </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {isMobileView ? (
+  // Affichez le bouton de menu
+  <IconButton
+    color="inherit"
+    aria-label="Menu"
+    onClick={() => setMenuOpen(!menuOpen)}
+  >
+    <MenuIcon />
+  </IconButton>
+            ) : (
+             
+              // Sinon, affichez les éléments directement
+              <>
+                <Button color="inherit" onClick={handleAccueilClick}>
+                  Accueil
+                </Button>
+                <Button color="inherit">Contact</Button>
+                <Button
+                  color="inherit"
+                  onClick={() =>
+                    handleCategoryHeaderChange({
+                      target: { value: 'espacesPubs' }
+                    })
+                  }
+                >
+                  Espaces Pubs
+                </Button>
+                <Select
+                  value={selectedCategoryHeader}
+                  onChange={handleCategoryHeaderChange}
+                  displayEmpty
+                  variant="outlined"
+                  margin="dense"
+                  name="categories"
+                >
+                  <MenuItem value="">Les catégories</MenuItem>
+                  {allCategories.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </>
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
+       {/* Drawer pour le menu mobile */}
+       <Drawer
+  anchor="left"
+  open={menuOpen}
+  onClose={() => setMenuOpen(false)} // Fermez le Drawer lorsque l'utilisateur clique à l'extérieur
+ 
+>
+        <List>
+        <ListItem button onClick={() => setMenuOpen(false)}>
+          <ListItem button onClick={handleAccueilClick}>
+            <ListItemText primary="Accueil" />
+          </ListItem>
+          </ListItem>
+          <ListItem >
+          <ListItem button onClick={() => setMenuOpen(false)}>
+            <ListItemText primary="Contact" />
+          </ListItem>
+          </ListItem>
+          <ListItem button onClick={() => setMenuOpen(false)}>
+          <ListItem   color="inherit"
+                  onClick={() =>
+                    handleCategoryHeaderChange({
+                      target: { value: 'espacesPubs' }
+                    })
+                  } >
+            <ListItemText primary="Espaces pubs" />
+          </ListItem>
+          </ListItem>
+          <ListItem button onClick={() => setMenuOpen(false)}>
+          <ListItem >
+           
+          <Select
+                  value={selectedCategoryHeader}
+                  onChange={handleCategoryHeaderChange}
+                  displayEmpty
+                  variant="outlined"
+                  margin="dense"
+                  name="categories"
+                >
+                  <MenuItem value="">Les catégories</MenuItem>
+                  {allCategories.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+          </ListItem>
+          </ListItem>
+        </List>
+      </Drawer>
       {/* Carousel */}
       <Carousel
         animation="slide"
@@ -492,4 +568,3 @@ if ('serviceWorker' in navigator) {
 
 
 export default App;
-
