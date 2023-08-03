@@ -21,8 +21,22 @@ import {
   Select,
   Tooltip,
   Grid,
-  Box
+  Box,
+  Drawer, 
+  List,
+  ListItem, 
+  ListItemIcon,
+  ListItemText,
+  IconButton ,
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
+import ContactIcon from '@mui/icons-material/ContactMail';
+import AdIcon from '@mui/icons-material/LocalOffer';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import Collapse from '@mui/material/Collapse';
 // Importez également le composant SinglePage
 import SinglePage from './SinglePage'; // Assurez-vous de remplacer le chemin d'accès approprié si nécessaire
 
@@ -32,9 +46,11 @@ function App() {
     // Ajoutez ici d'autres catégories prédéfinies si nécessaire
     const [selectedCategoryHeader, setSelectedCategoryHeader] = useState('');
     const handleAccueilClick = () => {
-      setAfficherPublicites(false); // Assurez-vous que les publicités sont cachées
-      setShowForm(true); // Affichez à nouveau le formulaire
+      setAfficherPublicites(false); // Masquer les publicités
+      setShowForm(true); // Afficher le formulaire
+      setFilteredTasks([]); // Réinitialiser la liste des produits affichés
     };
+    
   const [allCategories, setAllCategories] = useState([]);
   // Avant le retour de la fonction App()
 const [formHovered, setFormHovered] = useState(false);
@@ -130,26 +146,17 @@ const handleTakePhoto = async () => {
   const handleCategoryHeaderChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedCategoryHeader(selectedValue);
-    
-    console.log('ID de la catégorie sélectionnée dans le header:', selectedValue);
+  
     if (selectedValue === 'espacesPubs') {
       setAfficherPublicites(true); // Afficher les publicités
       setShowForm(false); // Masquer le formulaire
+      setSelectedCategoryHeader(''); // Réinitialiser la sélection des catégories
     } else if (selectedValue === 'accueil') {
       setAfficherPublicites(false); // Masquer les publicités
       setShowForm(true); // Afficher le formulaire
     } else {
       fetchFilteredTasks(parseInt(selectedValue));
       setShowForm(false); // Masquer le formulaire
-    }
-    if (selectedValue !== '') {
-      fetchFilteredTasks(parseInt(selectedValue));
-      setShowForm(false); // Masquer le formulaire lorsque la catégorie est sélectionnée
-     
-    } else {
-      setShowForm(true); // Afficher le formulaire lorsque "Toutes les catégories" est sélectionné
-      setFilteredTasks([]); // Réinitialiser la liste des produits affichés
-      fetchTasks(); // Charger toutes les tâches lorsque "Toutes les catégories" est sélectionné
     }
   };
   
@@ -266,6 +273,7 @@ if ('serviceWorker' in navigator) {
     
       <div>
       {/* Header */}
+     
       <AppBar position="static">
        
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -274,9 +282,10 @@ if ('serviceWorker' in navigator) {
       
 <Box sx={{ display: 'flex', alignItems: 'center' }}>
     <MenuItem>
-    <Button color="inherit" onClick={() => { setAfficherPublicites(false); setShowForm(true); }}>
+    <Button color="inherit" onClick={handleAccueilClick}>
   Accueil
 </Button>
+
   </MenuItem>
   <MenuItem>
     <Button color="inherit">Contact</Button>
@@ -434,14 +443,13 @@ if ('serviceWorker' in navigator) {
     
                {/* Conteneur pour afficher les tâches */}
               
-               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '20px' }}></div>
-               {afficherPublicites ? (
-        <PublicitesPage />
-      ) : (
-        <div>
-
-  {Array.isArray(tasks) &&
-    tasks.map((task) => (
+   
+   <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '20px' }}>
+          {afficherPublicites ? (
+            <PublicitesPage />
+          ) : (
+            Array.isArray(tasks) &&
+            tasks.map((task) => (
               <Tooltip
                 
                 open={showTooltip && task.id === showTooltip}
@@ -470,17 +478,18 @@ if ('serviceWorker' in navigator) {
                       Prix: {task.prix}
                     </Typography>
                   </CardContent>
-                  
-                </Card>
-              </Tooltip>
-          ))}
-         
-        </div>
-      )}
-      </Container>
-    </div>
-  );
-}
+                 
+               </Card>
+               </Tooltip>
+               ))
+             )}
+           </div>
+         </Container>
+       </div>
+     );
+   }
+   
+
 
 export default App;
 
