@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Carousel from 'react-material-ui-carousel';
+
 import { Paper } from '@mui/material';
 import carouselImage1 from './images/sary.jpg';
 import carouselImage2 from './images/pic.jpg';
