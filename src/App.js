@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Carousel from 'react-material-ui-carousel';
-
+// import firebase from "../firebase"; 
+// import './install'; 
 import { Paper } from '@mui/material';
 import carouselImage1 from './images/sary.jpg';
 import carouselImage2 from './images/pic.jpg';
@@ -70,7 +71,8 @@ const [menuOpen, setMenuOpen] = useState(false); // Ajouter l'état pour contrô
   const [selectedCategory, setSelectedCategory] = useState('');
   const [showForm, setShowForm] = useState(true);
   const [filteredTasks, setFilteredTasks] = useState([]);
-//espaces pubs 
+
+  //espaces pubs 
 
 const [afficherPublicites, setAfficherPublicites] = useState(false); // Ajoutez l'état pour afficher les publicités
 //photos 
