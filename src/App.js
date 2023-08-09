@@ -9,6 +9,7 @@ import carouselImage3 from './images/Lame.jpg';
 import logoImage from './images/logo.png';
 import MenuIcon from '@mui/icons-material/Menu'; // Importez l'icône MenuIcon depuis Material-UI
 
+
 import {
   AppBar,
   Toolbar,
@@ -36,7 +37,7 @@ import {
 
 // Importez également le composant SinglePage
 import SinglePage from './SinglePage'; // Assurez-vous de remplacer le chemin d'accès approprié si nécessaire
-
+// import Contact from './Contact'
 import PublicitesPage from './PublicitesPage'; // Assurez-vous de fournir le bon chemin d'accès
 function App() {
   const [categories, setCategories] = useState([]);
@@ -44,9 +45,12 @@ function App() {
     const [selectedCategoryHeader, setSelectedCategoryHeader] = useState('');
     const handleAccueilClick = () => {
       setAfficherPublicites(false); // Masquer les publicités
+      setAfficherContact(false);
       setShowForm(true); // Afficher le formulaire
       setFilteredTasks([]); // Réinitialiser la liste des produits affichés
     };
+   
+   
     //responsve
 
   const [allCategories, setAllCategories] = useState([]);
@@ -71,7 +75,8 @@ const [menuOpen, setMenuOpen] = useState(false); // Ajouter l'état pour contrô
   const [selectedCategory, setSelectedCategory] = useState('');
   const [showForm, setShowForm] = useState(true);
   const [filteredTasks, setFilteredTasks] = useState([]);
-
+ //contact
+  const [afficherContact, setAfficherContact] = useState(false); // Ajoutez l'état pour afficher les contact
   //espaces pubs 
 
 const [afficherPublicites, setAfficherPublicites] = useState(false); // Ajoutez l'état pour afficher les publicités
@@ -145,26 +150,38 @@ const handleTakePhoto = async () => {
   
   const handleCategoryHeaderChange = (event) => {
     const selectedValue = event.target.value;
-  
+    if (selectedValue === 'Contact') {
+      setAfficherContact(true);
+      setShowForm(false);
+      setSelectedCategoryHeader('');
+      setSelectedCategory(null); // Réinitialiser la catégorie sélectionnée
+      setFilteredTasks([]); // Réinitialiser la liste filtrée
+    }
     if (selectedValue === 'espacesPubs') {
       setAfficherPublicites(true);
       setShowForm(false);
       setSelectedCategoryHeader('');
+      setSelectedCategory(null); // Réinitialiser la catégorie sélectionnée
       setFilteredTasks([]); // Réinitialiser la liste filtrée
     } else if (selectedValue === 'accueil') {
       setAfficherPublicites(false);
       setShowForm(true);
       setSelectedCategoryHeader('');
       setFilteredTasks([]); // Réinitialiser la liste filtrée
-    } else {
+    } else if (selectedValue === 'categories') {
+      setAfficherPublicites(false);
       setSelectedCategoryHeader(selectedValue);
-      fetchFilteredTasks(parseInt(selectedValue)); // Mettre à jour la liste filtrée
+      setSelectedCategory(null); // Réinitialiser la catégorie sélectionnée
+      setShowForm(false);
+      setFilteredTasks([]); // Réinitialiser la liste filtrée
+    } else {
+      setAfficherPublicites(false);
+      setSelectedCategoryHeader(selectedValue);
+      setSelectedCategory(selectedValue);
+      fetchFilteredTasks(parseInt(selectedValue));
       setShowForm(false);
     }
   };
-  
-  
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -210,12 +227,7 @@ const handleTakePhoto = async () => {
     }
   };
 
-  const handleHiseraButtonClick = (taskId) => {
-  if (!formHovered) {
-    setShowForm((prevShowForm) => !prevShowForm); // Afficher ou masquer le formulaire lorsqu'on clique sur "Seraina"
-  }
-  setShowTooltip(taskId); // Afficher la tooltip pour indiquer quel élément a été cliqué
-};
+
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -242,35 +254,40 @@ if ('serviceWorker' in navigator) {
 
   const fetchFilteredTasks = async (categoryId) => {
     try {
-      const response = await fetch(`http://localhost:5000/tasks?category=${categoryId}`);
+      let response;
+      if (categoryId === null) {
+        response = await fetch('http://localhost:5000/tasks'); // Charger toutes les tâches sans filtre de catégorie
+      } else {
+        response = await fetch(`http://localhost:5000/tasks?category=${categoryId}`);
+      }
       const data = await response.json();
       setTasks(data);
     } catch (error) {
-      console.error('Error fetching filtered tasks:', error);
+      console.error('Error fetching tasks:', error);
     }
   };
   
 
-  // Fonction pour ajouter une nouvelle catégorie
-  const handleNewCategorySubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const formDataWithImage = new FormData();
-      formDataWithImage.append('name', formData.newCategory);
+  // // Fonction pour ajouter une nouvelle catégorie
+  // const handleNewCategorySubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const formDataWithImage = new FormData();
+  //     formDataWithImage.append('name', formData.newCategory);
 
-      const response = await fetch('http://localhost:5000/categories', {
-        method: 'POST',
-        body: formDataWithImage,
-      });
+  //     const response = await fetch('http://localhost:5000/categories', {
+  //       method: 'POST',
+  //       body: formDataWithImage,
+  //     });
 
-      const newCategory = await response.json();
-      setCategories([...categories, newCategory]);
-      setCategoryIdCounter(categoryIdCounter + 1);
-      setFormData({ ...formData, categories: newCategory.id, newCategory: '' });
-    } catch (error) {
-      console.error('Error inserting category:', error);
-    }
-  };
+  //     const newCategory = await response.json();
+  //     setCategories([...categories, newCategory]);
+  //     setCategoryIdCounter(categoryIdCounter + 1);
+  //     setFormData({ ...formData, categories: newCategory.id, newCategory: '' });
+  //   } catch (error) {
+  //     console.error('Error inserting category:', error);
+  //   }
+  // };
   const formClass = showForm ? '' : 'hidden';
   useEffect(() => {
     const checkScreenSize = () => {
@@ -312,7 +329,12 @@ if ('serviceWorker' in navigator) {
                 <Button color="inherit" onClick={handleAccueilClick}>
                   Accueil
                 </Button>
-                <Button color="inherit">Contact</Button>
+                <Button color="inherit"   
+                  onClick={() =>
+                    handleCategoryHeaderChange({
+                      target: { value: 'Contact' }
+                    })
+                  }>Contact</Button>
                 <Button
                   color="inherit"
                   onClick={() =>
@@ -329,9 +351,10 @@ if ('serviceWorker' in navigator) {
                   displayEmpty
                   variant="outlined"
                   margin="dense"
-                  name="categories"
+                  // value="Les categories"
                 >
-                  <MenuItem value="">Les catégories</MenuItem>
+                
+                  <MenuItem value="categories">Les catégories</MenuItem>
                   {allCategories.map((category) => (
                     <MenuItem key={category.id} value={category.id}>
                       {category.name}
@@ -358,7 +381,14 @@ if ('serviceWorker' in navigator) {
           </ListItem>
           <ListItem >
           <ListItem button onClick={() => setMenuOpen(false)}>
+          <ListItem   color="inherit"
+                  onClick={() =>
+                    handleCategoryHeaderChange({
+                      target: { value: 'Contact' }
+                    })
+                  } >
             <ListItemText primary="Contact" />
+          </ListItem>
           </ListItem>
           </ListItem>
           <ListItem button onClick={() => setMenuOpen(false)}>
@@ -505,11 +535,8 @@ if ('serviceWorker' in navigator) {
           <SinglePage filteredTasks={filteredTasks} /> // Pass the filteredTasks state as a prop
           
           )}
-         
           <div>
-  
-          <h1>IREO SERA</h1> 
-          {filteredTasks.map((task) => (
+            {filteredTasks.map((task) => (
             <div key={task.id}>
               <p>Nom: {task.nomSera}</p>
               <p>Description: {task.descriptionSera}</p>
@@ -517,12 +544,7 @@ if ('serviceWorker' in navigator) {
             </div>
           ))}
         </div>
-    
-          
-    
                {/* Conteneur pour afficher les tâches */}
-              
-   
    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '20px' }}>
           {afficherPublicites ? (
             <PublicitesPage />
