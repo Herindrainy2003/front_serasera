@@ -24,7 +24,7 @@ function Contact() {
           <ListItemIcon>
             <EmailIcon />
           </ListItemIcon>
-          <ListItemText primary="Email : raiky601@gmail.com" />
+          <ListItemText primary="Email : serasera601@gmail.com" />
         </ListItem>
         <ListItem>
           <ListItemIcon>
