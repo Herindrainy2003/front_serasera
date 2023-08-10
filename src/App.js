@@ -53,7 +53,8 @@ function App() {
       setFilteredTasks([]); // Réinitialiser la liste des produits affichés
     };
    
-   
+    const [showEmptyFieldsError, setShowEmptyFieldsError] = useState(false);
+
     //responsve
 
   const [allCategories, setAllCategories] = useState([]);
@@ -182,7 +183,17 @@ const [afficherPublicites, setAfficherPublicites] = useState(false); // Ajoutez 
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    if (
+      formData.nomPisera === '' ||
+      formData.nomSera === '' ||
+      formData.descriptionSera === '' ||
+      formData.prix === '' ||
+      formData.contact === '' ||
+      formData.photo === null
+    ) {
+      setShowEmptyFieldsError(true);
+      return; // Arrêter le traitement du formulaire
+    }
     try {
       const formDataWithImage = new FormData();
      
