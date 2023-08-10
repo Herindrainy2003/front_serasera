@@ -6,9 +6,9 @@ function Contact() {
       <h2>Contactez-nous</h2>
       <p>Pour toute question ou demande de renseignements, veuillez nous contacter :</p>
       <ul>
-        <li>Téléphone : 123-456-789</li>
-        <li>Email : contact@example.com</li>
-        <li>Adresse : 123 Rue des Contacts, Ville</li>
+        <li>Téléphone : 034 62 963 41</li>
+        <li>Email : raiky601@gmail.com</li>
+        <li>Adresse : Encenite Score Bazar BE Toliara</li>
       </ul>
     </div>
   );

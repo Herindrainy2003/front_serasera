@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Carousel from 'react-material-ui-carousel';
 // import firebase from "../firebase"; 
 // import './install'; 
+import Contact from './Contact';
 import { Paper } from '@mui/material';
 import carouselImage1 from './images/sary.jpg';
 import carouselImage2 from './images/pic.jpg';
@@ -22,7 +23,7 @@ import {
   CardHeader,
   MenuItem,
   CardContent,
-  CardActions,
+
   Select,
   Tooltip,
   Grid,
@@ -30,7 +31,7 @@ import {
   Drawer, 
   List,
   ListItem, 
-  ListItemIcon,
+ 
   ListItemText,
   IconButton ,
 } from '@mui/material';
@@ -38,14 +39,16 @@ import {
 // Importez également le composant SinglePage
 import SinglePage from './SinglePage'; // Assurez-vous de remplacer le chemin d'accès approprié si nécessaire
 // import Contact from './Contact'
+
 import PublicitesPage from './PublicitesPage'; // Assurez-vous de fournir le bon chemin d'accès
 function App() {
   const [categories, setCategories] = useState([]);
     // Ajoutez ici d'autres catégories prédéfinies si nécessaire
     const [selectedCategoryHeader, setSelectedCategoryHeader] = useState('');
+    
     const handleAccueilClick = () => {
       setAfficherPublicites(false); // Masquer les publicités
-      setAfficherContact(false);
+      setAfficherContact(false);//masquer les formualaires
       setShowForm(true); // Afficher le formulaire
       setFilteredTasks([]); // Réinitialiser la liste des produits affichés
     };
@@ -55,11 +58,11 @@ function App() {
 
   const [allCategories, setAllCategories] = useState([]);
   // Avant le retour de la fonction App()
-const [formHovered, setFormHovered] = useState(false);
+
 const [isMobileView, setIsMobileView] = useState(false);
 const [menuOpen, setMenuOpen] = useState(false); // Ajouter l'état pour contrôler l'ouverture/fermeture du menu
 
-  const [categoryIdCounter, setCategoryIdCounter] = useState(3); // Compteur pour l'ID de la prochaine catégorie
+ 
   const [tasks, setTasks] = useState([]);
   const [formData, setFormData] = useState({
     nomPisera: '',
@@ -80,46 +83,37 @@ const [menuOpen, setMenuOpen] = useState(false); // Ajouter l'état pour contrô
   //espaces pubs 
 
 const [afficherPublicites, setAfficherPublicites] = useState(false); // Ajoutez l'état pour afficher les publicités
-//photos 
-const handleTakePhoto = async () => {
-  try {
-    // Ouvrir l'appareil photo en utilisant l'API MediaDevices
-    const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+// //photos 
+// const handleTakePhoto = async () => {
+//   try {
+//     // Ouvrir l'appareil photo en utilisant l'API MediaDevices
+//     const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-    // Créer un élément vidéo pour afficher le flux de la caméra
-    const videoElement = document.createElement('video');
-    videoElement.srcObject = mediaStream;
-    videoElement.style.display = 'block';
-    videoElement.style.margin = '0 auto';
-    videoElement.style.maxWidth = '100%';
-    videoElement.style.maxHeight = '100%';
+  
+   
 
-    // Afficher la vidéo dans une fenêtre contextuelle (popup)
-    const popup = window.open('', '_blank', 'width=640,height=480');
-    popup.document.body.appendChild(videoElement);
+//     // Laisser l'utilisateur prendre une photo en cliquant sur le bouton dans la fenêtre contextuelle
+//     const takePhotoButton = document.createElement('button');
+//     takePhotoButton.innerText = 'Prendre une photo';
+//     takePhotoButton.onclick = () => {
+//       const canvas = document.createElement('canvas');
+//       canvas.width = videoElement.videoWidth;
+//       canvas.height = videoElement.videoHeight;
+//       canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-    // Laisser l'utilisateur prendre une photo en cliquant sur le bouton dans la fenêtre contextuelle
-    const takePhotoButton = document.createElement('button');
-    takePhotoButton.innerText = 'Prendre une photo';
-    takePhotoButton.onclick = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = videoElement.videoWidth;
-      canvas.height = videoElement.videoHeight;
-      canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+//       // Convertir la photo en URL de données
+//       const photoUrl = canvas.toDataURL();
+//       console.log('URL de la photo:', photoUrl);
 
-      // Convertir la photo en URL de données
-      const photoUrl = canvas.toDataURL();
-      console.log('URL de la photo:', photoUrl);
+//       // Fermer la fenêtre contextuelle après avoir pris la photo
+//       popup.close();
+//     };
 
-      // Fermer la fenêtre contextuelle après avoir pris la photo
-      popup.close();
-    };
-
-    popup.document.body.appendChild(takePhotoButton);
-  } catch (error) {
-    console.error('Erreur lors de l\'accès à l\'appareil photo:', error);
-  }
-};
+//     popup.document.body.appendChild(takePhotoButton);
+//   } catch (error) {
+//     console.error('Erreur lors de l\'accès à l\'appareil photo:', error);
+//   }
+// };
   useEffect(() => {
     fetchTasks(); // Charger toutes les tâches au chargement initial de la page
     fetchCategories();
@@ -152,17 +146,21 @@ const handleTakePhoto = async () => {
     const selectedValue = event.target.value;
     if (selectedValue === 'Contact') {
       setAfficherContact(true);
+      setAfficherContact(!afficherContact); // Inversez l'état
+    setAfficherPublicites(false); // Réinitialisez l'état d'affichage des publicités
       setShowForm(false);
       setSelectedCategoryHeader('');
       setSelectedCategory(null); // Réinitialiser la catégorie sélectionnée
       setFilteredTasks([]); // Réinitialiser la liste filtrée
     }
-    if (selectedValue === 'espacesPubs') {
+   else if (selectedValue === 'espacesPubs') {
       setAfficherPublicites(true);
       setShowForm(false);
       setSelectedCategoryHeader('');
       setSelectedCategory(null); // Réinitialiser la catégorie sélectionnée
       setFilteredTasks([]); // Réinitialiser la liste filtrée
+      setAfficherPublicites(!afficherPublicites); // Inversez l'état
+      setAfficherContact(false); // Réinitialisez l'état d'affichage du contact
     } else if (selectedValue === 'accueil') {
       setAfficherPublicites(false);
       setShowForm(true);
@@ -521,9 +519,7 @@ if ('serviceWorker' in navigator) {
             style={{Width: 400 }}
           />
           <input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, photo: e.target.files[0] })} />
-          <Button variant="contained" color="primary" onClick={handleTakePhoto}>
-        Prendre une photo
-      </Button>
+        
           <Button variant="contained" color="primary" type="submit">
             Asera
           </Button>
@@ -546,8 +542,12 @@ if ('serviceWorker' in navigator) {
         </div>
                {/* Conteneur pour afficher les tâches */}
    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '20px' }}>
-          {afficherPublicites ? (
+          {afficherContact ? (
+        <Contact />
+      ) :
+          afficherPublicites ? (
             <PublicitesPage />
+           
           ) : (
             Array.isArray(tasks) &&
             tasks.map((task) => (
